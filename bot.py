@@ -1,12 +1,19 @@
+from concurrent.futures import thread
 import discord
 import os
 from dotenv import load_dotenv
 from discord.ext import commands
+import threading
+
+from Raspi import Raspi
+
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 bot = commands.Bot(command_prefix='!')
+monRaspi = Raspi()
+
 
 @bot.event
 async def on_ready():
@@ -28,6 +35,11 @@ async def repeterDeux(ctx, arg1, arg2):
 @bot.command()
 async def repeterMultiple(ctx, *args):
     await ctx.send('{} arguments: {}'.format(len(args), ', '.join(args)))
+
+@bot.command()
+async def blink(ctx):
+    thread = threading.Thread(target=monRaspi.blink, args=())   
+    thread.start()
 
 bot.run(TOKEN)
 
